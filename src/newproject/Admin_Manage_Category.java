@@ -3,6 +3,7 @@ package newproject;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -228,20 +229,33 @@ public class Admin_Manage_Category extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     File f;
+    Path relativePath;
     private void fileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooseActionPerformed
         // TODO add your handling code here:
         int ans = jfc.showOpenDialog(this);
 
         if (ans == JFileChooser.APPROVE_OPTION) {
             f = jfc.getSelectedFile();
-            CategImage.setIcon(new ImageIcon(f + ""));
+            
+            String absolutePath = f.getAbsolutePath();
+            System.out.println("Absolute Path: " + absolutePath);
+            
+            // Define the base directory (can be project root or execution dir)
+            File baseDir = new File(System.getProperty("user.dir")); // Project directory
+            
+            // Convert absolute path to relative path
+            Path basePath = baseDir.toPath();
+            Path filePath = f.toPath();
+            relativePath = basePath.relativize(filePath);
+            CategImage.setIcon(new ImageIcon(relativePath + ""));
 
-            ImageIcon i1 = new ImageIcon(f + "");
+            ImageIcon i1 = new ImageIcon(relativePath + "");
             Image resized = i1.getImage().getScaledInstance(CategImage.getWidth(), CategImage.getHeight(), Image.SCALE_SMOOTH);
             ImageIcon i2 = new ImageIcon(resized);
             CategImage.setIcon(i2);
 
             System.out.println(f);
+            System.out.println(relativePath);
         } else {
             System.out.println("Cancel Clicked");
         }
@@ -251,7 +265,7 @@ public class Admin_Manage_Category extends javax.swing.JFrame {
         // TODO add your handling code here:
         String categNm = tf1.getText();
         String categDsc = tf2.getText();
-        String photo = "" + f;
+        String photo = "" + relativePath;
         System.out.println("Name : " + photo + " this");
         
         System.out.println(photo.length());

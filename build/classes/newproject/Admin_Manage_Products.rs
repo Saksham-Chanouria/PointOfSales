@@ -1,7 +1,0 @@
-newproject.Admin_Manage_Products$2
-newproject.Admin_Manage_Products$1
-newproject.ImageRenderer
-newproject.Admin_Manage_Products$mytablemodel
-newproject.Admin_Manage_Products$4
-newproject.Admin_Manage_Products
-newproject.Admin_Manage_Products$3

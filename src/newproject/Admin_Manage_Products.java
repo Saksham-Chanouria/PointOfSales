@@ -3,6 +3,7 @@ package newproject;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -291,13 +292,24 @@ public class Admin_Manage_Products extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     File f;
+    Path relativePath;
     private void fileChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooseActionPerformed
         // TODO add your handling code here:
         int ans = jfc.showOpenDialog(this);
 ////
         if (ans == JFileChooser.APPROVE_OPTION) {
             f = jfc.getSelectedFile();
-            productImage.setIcon(new ImageIcon(f + ""));
+            String absolutePath = f.getAbsolutePath();
+            System.out.println("Absolute Path: " + absolutePath);
+            
+            // Define the base directory (can be project root or execution dir)
+            File baseDir = new File(System.getProperty("user.dir")); // Project directory
+            
+            // Convert absolute path to relative path
+            Path basePath = baseDir.toPath();
+            Path filePath = f.toPath();
+            relativePath = basePath.relativize(filePath);
+            productImage.setIcon(new ImageIcon(relativePath + ""));
 
             ImageIcon i1 = new ImageIcon(f + "");
             Image resized = i1.getImage().getScaledInstance(productImage.getWidth(), productImage.getHeight(), Image.SCALE_SMOOTH);
@@ -317,7 +329,7 @@ public class Admin_Manage_Products extends javax.swing.JFrame {
         String categName = (String)jc.getSelectedItem();
         int price = Integer.parseInt(priceJSP.getModel().getValue().toString());
         int quantity = Integer.parseInt(quantityJSP.getModel().getValue().toString());
-        String photo = f+"";
+        String photo = relativePath+"";
         
         int res = obj.add_Product(pname, pDesc, categName,price,quantity,photo);
         
