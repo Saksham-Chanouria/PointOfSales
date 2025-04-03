@@ -49,4 +49,11 @@ Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/POS",
 Add all the libraries/jar files in src/LIBS folder
 
 
+#
+
+# Run the Application
+
+Go to src/newproject/AdminLogin.java and run the file. It will also start server automatically.
+If you want to open any other file, then you have to run MyServer.java manually.
+
 
