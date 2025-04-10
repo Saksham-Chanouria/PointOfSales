@@ -359,7 +359,6 @@ public class Admin_Manage_Products extends javax.swing.JFrame {
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, "....");
         AdminHome obj = new AdminHome();
         dispose();
     }//GEN-LAST:event_backActionPerformed

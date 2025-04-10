@@ -49,7 +49,6 @@ public class GenerateBill extends javax.swing.JFrame {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            System.out.println("I am in this.");
             BillProd obj = orig.get(rowIndex);
             if(columnIndex==0){
                 return obj.Pname;

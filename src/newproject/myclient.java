@@ -92,102 +92,137 @@ public class myclient {
 
     public ArrayList fetchCategories() {
         ArrayList<Category> al = new ArrayList<>();
-        try {
-            System.out.println("Hello");
-            HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchCateg").asString();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("Hello");
+                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchCateg").asString();
 
-            if (res.getStatus() == 200) {
-                String ans = res.getBody();
+                    if (res.getStatus() == 200) {
+                        String ans = res.getBody();
 
-                System.out.println(ans);
+                        System.out.println(ans);
 
-                JSONArray arr = new JSONArray(ans);
+                        JSONArray arr = new JSONArray(ans);
 
-                int n = arr.length();
+                        int n = arr.length();
 
-                for (int i = 0; i <= n - 1; i++) {
-                    JSONObject obj = (JSONObject) (arr.get(i));
+                        for (int i = 0; i <= n - 1; i++) {
+                            JSONObject obj = (JSONObject) (arr.get(i));
 
-                    String name = (String) obj.get("Name");
-                    String desc = (String) obj.get("Description");
-                    String photo = (String) obj.get("Photo");
+                            String name = (String) obj.get("Name");
+                            String desc = (String) obj.get("Description");
+                            String photo = (String) obj.get("Photo");
 
-                    al.add(new Category(name, desc, photo));
+                            al.add(new Category(name, desc, photo));
+                        }
+
+                    } else {
+                        System.out.println(res.getBody());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-            } else {
-                System.out.println(res.getBody());
+                
             }
-        } catch (Exception e) {
+        });
+        t.start();
+        
+        try{
+            t.join();
+        }
+        catch(Exception e){
             e.printStackTrace();
         }
+        
         return al;
     }
 
     public ArrayList fetchProducts() {
         ArrayList<Products> al = new ArrayList<>();
-        try {
-            System.out.println("Hello");
-            HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchProd").asString();
+        new Thread(new Runnable() {                                                         // Multithreading client requests to server so that there is synchronization
+            @Override
+            public void run() {
+                System.out.println("Thread is running to continuously fetch products");
+                
+                try {
+                    System.out.println("Hello");
+                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchProd").asString();
 
-            if (res.getStatus() == 200) {
-                String ans = res.getBody();
+                    if (res.getStatus() == 200) {
+                        String ans = res.getBody();
 
-                System.out.println(ans);
+                        System.out.println(ans);
 
-                JSONArray arr = new JSONArray(ans);
+                        JSONArray arr = new JSONArray(ans);
 
-                int n = arr.length();
+                        int n = arr.length();
 
-                for (int i = 0; i <= n - 1; i++) {
-                    JSONObject obj = (JSONObject) (arr.get(i));
+                        for (int i = 0; i <= n - 1; i++) {
+                            JSONObject obj = (JSONObject) (arr.get(i));
 
-                    String name = (String) obj.get("PName");
-                    String desc = (String) obj.get("PDesc");
-                    String category = (String) obj.get("Category");
-                    String quantity = (String) obj.get("Quantity");
-                    int price = (Integer) obj.get("Price");
-                    String photo = (String) obj.get("Photo");
+                            String name = (String) obj.get("PName");
+                            String desc = (String) obj.get("PDesc");
+                            String category = (String) obj.get("Category");
+                            String quantity = (String) obj.get("Quantity");
+                            int price = (Integer) obj.get("Price");
+                            String photo = (String) obj.get("Photo");
 
-                    al.add(new Products(name, desc, category,quantity,price,photo));
+                            al.add(new Products(name, desc, category,quantity,price,photo));
+                        }
+
+                    } else {
+                        System.out.println(res.getBody());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-            } else {
-                System.out.println(res.getBody());
+                
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).start();
         return al;
     }
     
     public ArrayList fetchCategName(){
         ArrayList<String> al = new ArrayList<>();
-        try {
-            System.out.println("Hello");
-            HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchCateg").asString();
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("Hello");
+                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchCateg").asString();
 
-            if (res.getStatus() == 200) {
-                String ans = res.getBody();
+                    if (res.getStatus() == 200) {
+                        String ans = res.getBody();
 
-                System.out.println(ans);
+                        System.out.println(ans);
 
-                JSONArray arr = new JSONArray(ans);
+                        JSONArray arr = new JSONArray(ans);
 
-                int n = arr.length();
+                        int n = arr.length();
 
-                for (int i = 0; i <= n - 1; i++) {
-                    JSONObject obj = (JSONObject) (arr.get(i));
+                        for (int i = 0; i <= n - 1; i++) {
+                            JSONObject obj = (JSONObject) (arr.get(i));
 
-                    String name = (String) obj.get("Name");
+                            String name = (String) obj.get("Name");
 
-                    al.add(name);
+                            al.add(name);
+                        }
+
+                    } else {
+                        System.out.println(res.getBody());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                
-            } else {
-                System.out.println(res.getBody());
             }
-        } catch (Exception e) {
+        });
+        t1.start();
+        try{
+            t1.join();
+        }
+        catch(Exception e){
             e.printStackTrace();
         }
         return al;
@@ -196,29 +231,41 @@ public class myclient {
     public ArrayList fetchCategNamePhoto(){
         ArrayList<CategBill> al = new ArrayList<>();
         
-        try{
-            HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchCategNmPh").asString();
-            
-            if(res.getStatus()==200){
-                String ans = res.getBody();
-                System.out.println(ans);
-                
-                JSONArray arr = new JSONArray(ans);
-                
-                int n = arr.length();
-                
-                for(int i=0;i<n;i++){
-                    JSONObject obj = (JSONObject) (arr.get(i));
-                    
-                    String name = (String) obj.get("Name");
-                    String photo = (String) obj.get("Photo");
-                    
-                    al.add(new CategBill(name,photo));
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchCategNmPh").asString();
+
+                    if(res.getStatus()==200){
+                        String ans = res.getBody();
+                        System.out.println(ans);
+
+                        JSONArray arr = new JSONArray(ans);
+
+                        int n = arr.length();
+
+                        for(int i=0;i<n;i++){
+                            JSONObject obj = (JSONObject) (arr.get(i));
+
+                            String name = (String) obj.get("Name");
+                            String photo = (String) obj.get("Photo");
+
+                            al.add(new CategBill(name,photo));
+                        }
+                    }
+                    else{
+                        System.out.println(res.getBody());
+                    }
+                }
+                catch(Exception e){
+                    e.printStackTrace();
                 }
             }
-            else{
-                System.out.println(res.getBody());
-            }
+        });
+        t1.start();
+        try{
+            t1.join();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -229,26 +276,38 @@ public class myclient {
     public ArrayList fetchProductNmPh(String name){
         ArrayList<ProductBill> al = new ArrayList<>();
         
-        try{
-            HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchProductNmPh").queryString("CategName",name).asString();
-            
-            if(res.getStatus()==200){
-                String ans = res.getBody();
-                System.out.println(ans);
-                
-                JSONArray arr = new JSONArray(ans);
-                
-                for(int i=0;i<arr.length();i++){
-                    JSONObject obj = (JSONObject) (arr.get(i));
-                    String Pname = (String) obj.get("PName");
-                    String photo = (String) obj.get("Photo");
-                    
-                    al.add(new ProductBill(Pname,photo));
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchProductNmPh").queryString("CategName",name).asString();
+
+                    if(res.getStatus()==200){
+                        String ans = res.getBody();
+                        System.out.println(ans);
+
+                        JSONArray arr = new JSONArray(ans);
+
+                        for(int i=0;i<arr.length();i++){
+                            JSONObject obj = (JSONObject) (arr.get(i));
+                            String Pname = (String) obj.get("PName");
+                            String photo = (String) obj.get("Photo");
+
+                            al.add(new ProductBill(Pname,photo));
+                        }
+                    }
+                    else{
+                        System.out.println(res.getBody());
+                    }
+                }
+                catch(Exception e){
+                    e.printStackTrace();
                 }
             }
-            else{
-                System.out.println(res.getBody());
-            }
+        });
+        t1.start();
+        try{
+            t1.join();
         }
         catch(Exception e){
             e.printStackTrace();

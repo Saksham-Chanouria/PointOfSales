@@ -276,6 +276,9 @@ public class Admin_Manage_Category extends javax.swing.JFrame {
         if (res == 1) 
         {
             JOptionPane.showMessageDialog(this, "Category Added Successfully");
+            tf1.setText("");
+            tf2.setText("");
+            CategImage.setIcon(new ImageIcon(""));
         } 
         else if (res == 0) {
             JOptionPane.showMessageDialog(this, "This Category Already Exists");
@@ -289,9 +292,7 @@ public class Admin_Manage_Category extends javax.swing.JFrame {
         al = obj.fetchCategories();
         tm.fireTableDataChanged();
         
-        tf1.setText("");
-        tf2.setText("");
-        CategImage.setIcon(new ImageIcon(""));
+        
     }//GEN-LAST:event_AddCategBtActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt){
