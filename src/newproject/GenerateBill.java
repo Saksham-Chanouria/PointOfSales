@@ -27,6 +27,9 @@ public class GenerateBill extends javax.swing.JFrame {
     JButton[] btArr2 = new JButton[100];
     mytablemodel tm;
     long totalAmount=0;
+    ArrayList<String> bill_pname;
+    String currentRow;
+    boolean nextWindow = false;
     
     
     class mytablemodel extends AbstractTableModel{
@@ -68,17 +71,31 @@ public class GenerateBill extends javax.swing.JFrame {
                 int price = Integer.parseInt(obj.price);
                 int qty=Integer.parseInt((String)obj.qty);
                 totalAmount = totalAmount+(qty*price);
-                amt.setText("Total Amount: "+totalAmount);
+                
                 return qty*price;
             }
             else{
                 return null;
             }
         }
+        
+        public void removeRow(int rowIndex){
+            orig.remove(rowIndex);
+            fireTableRowsDeleted(rowIndex, rowIndex);
+            
+        }
+        
+        public void addQuantity(int val,int row){
+            BillProd obj = orig.get(row);
+            obj.setQty(val+"");
+        }
     }
     
     public GenerateBill() {
         initComponents();
+        bill_pname = new ArrayList<>();
+        jButton2.setEnabled(false);
+        jButton3.setEnabled(false);
         prod = new ArrayList<>();
         orig = new ArrayList<>();
         al = new ArrayList<>();
@@ -151,48 +168,72 @@ public class GenerateBill extends javax.swing.JFrame {
             btArr2[i] = new JButton(i1);
             btArr2[i].setText(obj.name);
             
-            
             btArr2[i].setHorizontalTextPosition(SwingConstants.CENTER);
             btArr2[i].setVerticalTextPosition(SwingConstants.BOTTOM);
             productJp.add(btArr2[i]);
             btArr2[i].addActionListener(e -> productButtonClicked(index,obj.name));
         }
-        
-        
-        
         add(jsp2);
     }
     
+    void setText(){
+        long myAmount =0;
+        int columnIndex = 4; // change this to the column you want to iterate
+        int rowCount = jTable1.getRowCount();
+        
+        for (int row = 0; row < rowCount; row++) {
+            Object value = jTable1.getValueAt(row, columnIndex);
+            myAmount += (Integer)value;
+        }
+        amt.setText("Total Amount: "+myAmount);
+        
+    }
     
     int need=0;
     void productButtonClicked(int index,String name){
+        boolean dupFlag = false;
+        for(int i=0;i<bill_pname.size();i++){
+            if(name.equals(bill_pname.get(i))){
+                dupFlag=true;
+            }
+        }
+        System.out.println("I am checking the products");
         
-        String ans = JOptionPane.showInputDialog("Enter the quantity you want");
-        String flag;
-        if(ans!=null){
-            try{
-                need = Integer.parseInt(ans);
-                flag = obj.checkQuantity(name,need);
-                
-                if(flag.equals("available")){
-                    // <---------------------- LOGIC FOR ADDING PRODUCTS TO JTABLE ----------------------->
-                    String pname = name;
-                    prod = obj.getBillProd(pname,need);
-                    orig.add(prod.get(0));
-                    System.out.println("I am here noe");
-                    System.out.println(prod.toString());
-                    tm.fireTableDataChanged();
-                    
+        if(dupFlag){
+            JOptionPane.showMessageDialog(this, "You have already added this product");
+        }
+        else{
+            String ans = JOptionPane.showInputDialog("Enter the quantity you want");
+            String flag;
+            if(ans!=null){
+                try{
+                    need = Integer.parseInt(ans);
+                    flag = obj.checkQuantity(name,need);
+
+                    if(flag.equals("available")){
+                        // <---------------------- LOGIC FOR ADDING PRODUCTS TO JTABLE ----------------------->
+                        String pname = name;
+                        prod = obj.getBillProd(pname,need);
+                        orig.add(prod.get(0));
+                        System.out.println(prod.toString());
+                        bill_pname.add(name);
+                        tm.fireTableDataChanged();
+                        setText();
+                        jButton2.setEnabled(false);
+                        jButton3.setEnabled(false);
+                    }
+                    else{
+                        int available = Integer.parseInt(flag);
+                        JOptionPane.showMessageDialog(this, "Sorry!! We don't have enough stock.\nWe only have "+flag+" in stock");
+                    }
                 }
-                else{
-                    int available = Integer.parseInt(flag);
-                    JOptionPane.showMessageDialog(this, "Sorry!! We don't have enough stock.\nWe only have "+flag+" in stock");
+                catch(Exception e){
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Please enter an integer");
                 }
-            }
-            catch(Exception e){
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Please enter an integer");
-            }
+        }
+        
+        
         }
     }
 
@@ -212,9 +253,17 @@ public class GenerateBill extends javax.swing.JFrame {
         back = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         amt = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
+
+        jScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jScrollPane1MouseReleased(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -227,6 +276,11 @@ public class GenerateBill extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTable1MouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1);
@@ -254,13 +308,36 @@ public class GenerateBill extends javax.swing.JFrame {
         back.setBounds(0, 10, 90, 24);
 
         jButton1.setText("BUY");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton1);
-        jButton1.setBounds(1140, 470, 160, 50);
+        jButton1.setBounds(1030, 510, 160, 50);
 
         amt.setFont(new java.awt.Font("Helvetica Neue", 1, 18)); // NOI18N
         amt.setText("Total Amount: ");
         getContentPane().add(amt);
         amt.setBounds(900, 470, 220, 40);
+
+        jButton2.setText("Increase");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2);
+        jButton2.setBounds(1008, 590, 80, 23);
+
+        jButton3.setText("Remove");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3);
+        jButton3.setBounds(1130, 590, 78, 23);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -271,6 +348,88 @@ public class GenerateBill extends javax.swing.JFrame {
         AdminHome obj = new AdminHome();
         dispose();
     }//GEN-LAST:event_backActionPerformed
+
+    private void jTable1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseReleased
+        // TODO add your handling code here:
+        jButton2.setEnabled(true);
+        jButton3.setEnabled(true);
+    }//GEN-LAST:event_jTable1MouseReleased
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+        
+        if(row!=-1){
+            int need = Integer.parseInt(JOptionPane.showInputDialog(this,"Enter the quantity you want to add."));
+            Object qty = jTable1.getValueAt(row, 2);
+            Object o2 = jTable1.getValueAt(row, 0);
+            String name = (String)o2;
+            String qs = (String)qty;
+            int quantity = Integer.parseInt(qs);
+            String flag = obj.checkQuantity(name,need+quantity);
+
+                    if(flag.equals("available")){
+                        tm.addQuantity(need+quantity,row);
+                        tm.fireTableDataChanged();
+                        setText();
+                    }
+                    else{
+                        int available = Integer.parseInt(flag);
+                        JOptionPane.showMessageDialog(this, "Sorry!! We don't have enough stock.\nWe only have "+flag+" in stock");
+                    }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+        int column = jTable1.getSelectedColumn();
+        
+        if(row!=-1 && column != -1){
+            
+            Object value = jTable1.getValueAt(row, 0);
+            Object value2 = jTable1.getValueAt(row, 4);
+            
+            currentRow = (String) value;
+            int val = (Integer)value2;
+            JOptionPane.showMessageDialog(this, "Product Removed");
+            tm.removeRow(row);
+            bill_pname.remove(currentRow);
+            setText();
+            jButton2.setEnabled(false);
+            jButton3.setEnabled(false);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jScrollPane1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jScrollPane1MouseReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        long myAmount=0;
+        int rowCount = jTable1.getRowCount();
+        String products[] =new String[rowCount];
+        int[] pprice = new int[rowCount];
+        int[] qty = new int[rowCount];
+         
+        if(rowCount>0){
+            for (int row = 0; row < rowCount; row++) {
+                Object value = jTable1.getValueAt(row, 4);
+                Object nm = jTable1.getValueAt(row, 0);
+                Object qt = jTable1.getValueAt(row, 2);
+                Object pp = jTable1.getValueAt(row, 3);
+                myAmount += (Integer)value;
+                products[row] = (String)nm;
+                pprice[row] = 1;
+                qty[row] = 1;
+            }
+//            Get_Customer_Details obj = new Get_Customer_Details(products,myAmount,qty,pprice);
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Buy some products");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,6 +470,8 @@ public class GenerateBill extends javax.swing.JFrame {
     private javax.swing.JLabel amt;
     private javax.swing.JButton back;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;

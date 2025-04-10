@@ -431,6 +431,12 @@ public class myclient {
         
         return al;
     }
+    
+    public int Buy_prod(String Cname,String CPhone,String p_mode,String[] Products,long gtotal,int[] qty,int [] pprice){
+        
+        
+        return -1;
+    }
 
     public static void main(String[] args) {
 

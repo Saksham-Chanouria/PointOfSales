@@ -22,4 +22,7 @@ public class BillProd {
         this.price = price;
         this.qty = qty;
     }
+    public void setQty(String qty){
+        this.qty = qty;
+    }
 }
