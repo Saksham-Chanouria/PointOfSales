@@ -37,7 +37,7 @@ CREATE TABLE users (
 );
 
 Create table POS.Bills(
-	BillID INT NOT NULL Auto_Increment,
+    BillID INT NOT NULL Auto_Increment,
     Date_Time datetime Not null,
     GTotal Int Not Null,
     AdminEmail Varchar(100) Not Null,
@@ -47,7 +47,7 @@ Create table POS.Bills(
 );
 
 Create table POS.BillDetails(
-	BillDetailsID INT NOT NULL Auto_Increment,
+    BillDetailsID INT NOT NULL Auto_Increment,
     BillID INT NOT NULL,
     PName Varchar(50) Not Null,
     PricePerUnit Int Not Null,
@@ -75,7 +75,14 @@ Add all the libraries/jar files in src/LIBS folder
 
 # Run the Application
 
-Go to src/newproject/AdminLogin.java and run the file. It will also start server automatically.
-If you want to open any other file, then you have to run MyServer.java manually.
+Case 1 :
+	-->If you have both the client and server as same Laptop, then run MyServer.java first and after that run AdminLogin.java
+
+ Case 2:
+ 	-->If client and server are seperate, then in client side, firstly go to src/newproject/myclient.java and set the IP equal to IP of Server PC 
+          which will be displayed on output screen on Server Side.<br/>
+	--> In server side, run MyServer.java<br/>
+        --> In Client side, run AdminLogin.java<br/>
+  
 
 
