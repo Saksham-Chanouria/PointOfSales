@@ -13,17 +13,10 @@ import org.json.*;
 
 public class MyServer extends JHTTPServer{
 
-    String IP = "";
-    @Override
-    public Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
-        Response res = null;
-        if(uri.equals("/checkAddress")){
-            System.out.println("Request Received");
-            
-            String ip = parms.getProperty("ip");
-            
-            // Code taken from Stack Overflow
-            try {
+    static String IP = "";
+    
+    public static void setIP(){
+        try {
                 Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
                 while (networkInterfaceEnumeration.hasMoreElements()) {
                     for (InterfaceAddress interfaceAddress : networkInterfaceEnumeration.nextElement().getInterfaceAddresses()) {
@@ -35,14 +28,10 @@ public class MyServer extends JHTTPServer{
             } catch (SocketException e) {
                 e.printStackTrace();
             }
-            
-            if(ip.equals(IP)){
-                res = new Response(HTTP_OK,"text/plain","Successful");
-            }
-            else{
-                res = new Response(HTTP_OK,"text/plain","Failed");
-            }
-        }
+    }
+    @Override
+    public Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
+        Response res = null;
         
         if(uri.equals("/adminLogin")){
             System.out.println("Request Received");
@@ -544,8 +533,11 @@ public class MyServer extends JHTTPServer{
     }
     public static void main(String[] args) {
         try {
+            setIP();
             MyServer obj = new MyServer(8000);
+            System.out.println("Server IP: "+IP);
             Thread.sleep(1000000000);
+            
             
         } catch (Exception e) {
             System.out.println(e);

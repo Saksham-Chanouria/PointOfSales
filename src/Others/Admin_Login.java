@@ -1,9 +1,12 @@
 
-package newproject;
+package Others;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import newproject.AdminHome;
+import newproject.MyServer;
+import newproject.myclient;
 
 
 public class Admin_Login extends JFrame implements ActionListener{

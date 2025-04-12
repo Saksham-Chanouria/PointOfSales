@@ -33,7 +33,6 @@ public class NewUser extends javax.swing.JFrame {
         ImageIcon icon = new ImageIcon("src/uploads/icon.png");
         setIconImage(icon.getImage());
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(600, 420);
         setLocationRelativeTo(null);
         setVisible(true);
