@@ -100,7 +100,7 @@ public class GenerateBill extends javax.swing.JFrame {
         orig = new ArrayList<>();
         al = new ArrayList<>();
         al2 = new ArrayList<>();
-        Dimension d= new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+        
         
         tm = new mytablemodel();
         
@@ -145,6 +145,14 @@ public class GenerateBill extends javax.swing.JFrame {
         
         add(jsp1);
         add(jsp2);
+        
+        Dimension d = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+        
+//            photoLB.setBounds(0,0,d.width,d.height);
+//            ImageIcon i2 = new ImageIcon("src/uploads/background.jpg");
+//            Image resized2 = i2.getImage().getScaledInstance(photoLB.getWidth(), photoLB.getHeight(), Image.SCALE_SMOOTH);
+//            ImageIcon i3 = new ImageIcon(resized2);
+//            photoLB.setIcon(i3);
         
         setTitle("Generate Bill");
         setSize(d);
@@ -255,6 +263,7 @@ public class GenerateBill extends javax.swing.JFrame {
         amt = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        photoLB = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -338,6 +347,8 @@ public class GenerateBill extends javax.swing.JFrame {
         });
         getContentPane().add(jButton3);
         jButton3.setBounds(1130, 590, 78, 23);
+        getContentPane().add(photoLB);
+        photoLB.setBounds(20, 60, 0, 0);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -483,5 +494,6 @@ public class GenerateBill extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel photoLB;
     // End of variables declaration//GEN-END:variables
 }

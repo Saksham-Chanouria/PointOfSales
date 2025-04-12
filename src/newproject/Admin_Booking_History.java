@@ -39,7 +39,13 @@ public class Admin_Booking_History extends javax.swing.JFrame {
         tm.fireTableDataChanged();
         
         
-        Dimension d= new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+        Dimension d = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+        photoLB2.setBounds(0,0,d.width,d.height);
+        ImageIcon i2 = new ImageIcon("src/uploads/background.jpg");
+        Image resized2 = i2.getImage().getScaledInstance(photoLB2.getWidth(), photoLB2.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon i3 = new ImageIcon(resized2);
+        photoLB2.setIcon(i3);
+        
         setSize(d.width,d.height);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -153,6 +159,10 @@ public class Admin_Booking_History extends javax.swing.JFrame {
         jTable2 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         back = new javax.swing.JButton();
+        photoLB = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        photoLB2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -194,10 +204,10 @@ public class Admin_Booking_History extends javax.swing.JFrame {
         getContentPane().add(jScrollPane2);
         jScrollPane2.setBounds(782, 180, 580, 402);
 
-        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
-        jLabel1.setText("Booking History");
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 30)); // NOI18N
+        jLabel1.setText("Bill Details");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(540, 20, 410, 60);
+        jLabel1.setBounds(190, 120, 410, 60);
 
         back.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         back.setForeground(new java.awt.Color(0, 51, 204));
@@ -209,6 +219,20 @@ public class Admin_Booking_History extends javax.swing.JFrame {
         });
         getContentPane().add(back);
         back.setBounds(10, 20, 90, 24);
+        getContentPane().add(photoLB);
+        photoLB.setBounds(20, 60, 0, 0);
+
+        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 30)); // NOI18N
+        jLabel2.setText("Product Details");
+        getContentPane().add(jLabel2);
+        jLabel2.setBounds(910, 120, 410, 60);
+
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
+        jLabel3.setText("Booking History");
+        getContentPane().add(jLabel3);
+        jLabel3.setBounds(540, 20, 410, 60);
+        getContentPane().add(photoLB2);
+        photoLB2.setBounds(20, 60, 0, 0);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -273,9 +297,13 @@ public class Admin_Booking_History extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton back;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JLabel photoLB;
+    private javax.swing.JLabel photoLB2;
     // End of variables declaration//GEN-END:variables
 }
