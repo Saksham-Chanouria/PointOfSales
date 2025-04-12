@@ -1,6 +1,8 @@
 
 package newproject;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
 import newproject.DBLoader;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -8,6 +10,8 @@ import java.awt.Toolkit;
 import java.sql.ResultSet;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import static newproject.myclient.adminGmail;
+import static newproject.myclient.isSet;
 
 /**
  *
@@ -18,6 +22,8 @@ public class NewUser extends javax.swing.JFrame {
     /**
      * Creates new form DataEntry
      */
+    int counter=0;
+    boolean gm=false,ps = false;
     public NewUser() {
         initComponents();
 
@@ -208,57 +214,28 @@ public class NewUser extends javax.swing.JFrame {
         String pass = tfPass.getText();
         String conpass = tfPass.getText();
         String gmail = tfGmail.getText();
-
-        try {
-            // LocalHost
-            ResultSet rs = DBLoader.executeSQL("Select * from test3.user where username = \'" + user + "\'");       
-            ResultSet gg = DBLoader.executeSQL("Select * from test3.user where gmail = \'" + tfGmail.getText() + "\'");
+        
+        myclient obj = new myclient();
+        if(jpPass.getText().equals(tfPass.getText())  && (!tfUser.getText().equals("") && !jpPass.getText().equals("") && !jpPass.getText().equals("") && !tfGmail.getText().equals("")) && ps && gm){
+            int ans = obj.createUser(user, pass, gmail);
             
-
-            if (rs.next()) {
-                JOptionPane.showMessageDialog(this, "This username already exists.");
-            } else {
-                if (tfUser.getText().equals("") || tfGmail.getText().equals("") || tfPass.getText().equals("")) {
-                    JOptionPane.showMessageDialog(this, "Empty field");
-                } else {
-
-                    if (jpPass.getText().equals(tfPass.getText())) {
-                        if (pass.length() >= 6) {
-                            if (tfGmail.getText().contains("@gmail.com")) {
-
-                                if (gg.next()) {
-                                    JOptionPane.showMessageDialog(this, "This Gmail already exists.");
-                                } else {
-                                    rs.moveToInsertRow();
-                                    rs.updateString("username", user);
-                                    rs.updateString("password", pass);
-                                    rs.updateString("gmail", gmail);
-                                    rs.insertRow();
-                                    JOptionPane.showMessageDialog(this, "New User Entered.");
-                                    dispose();
-
-                                    ManageServer obj = new ManageServer();
-                                }
-
-                            } else {
-                                JOptionPane.showMessageDialog(this, "Invalid Gmail.");
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Password should contain atleast 6 characters.");
-                        }
-                    } else {
-
-                        JOptionPane.showMessageDialog(this, "Password Mismatched.");
-                    }
-                }
+            if(ans==1){
+                JOptionPane.showMessageDialog(this, "New User Created");
+                AdminLogin obj2 = new AdminLogin();
+                dispose();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            else{
+                JOptionPane.showMessageDialog(this, "This User Already Exists");
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Invalid Credential");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     private void tfUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfUserActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_tfUserActionPerformed
 
     private void tfPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPassActionPerformed
@@ -277,6 +254,7 @@ public class NewUser extends javax.swing.JFrame {
         if (pass.length() >= 6 || pass.length() == 0) {
             passLb1.setText("");
             passLb2.setText("");
+            ps = true;
             if (jpPass.getText().equals(tfPass.getText())) {
                 DoublePass.setText("");
             } else {
@@ -312,6 +290,7 @@ public class NewUser extends javax.swing.JFrame {
         String gmail = tfGmail.getText();
         if(gmail.contains("@gmail.com") || gmail.length()==0){
             gmailChecker.setText("");
+            gm = true;
         }
         else{
             gmailChecker.setText("*Invalid Gmail");

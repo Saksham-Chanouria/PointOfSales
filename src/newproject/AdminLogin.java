@@ -45,7 +45,6 @@ public class AdminLogin extends javax.swing.JFrame {
         jp1 = new javax.swing.JPasswordField();
         newUser = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        forgot = new javax.swing.JButton();
         photoLB = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -105,17 +104,6 @@ public class AdminLogin extends javax.swing.JFrame {
         getContentPane().add(jLabel4);
         jLabel4.setBounds(100, 250, 70, 20);
 
-        forgot.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        forgot.setText("Forgot Password?");
-        forgot.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        forgot.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                forgotActionPerformed(evt);
-            }
-        });
-        getContentPane().add(forgot);
-        forgot.setBounds(20, 165, 160, 20);
-
         photoLB.setText("jLabel5");
         getContentPane().add(photoLB);
         photoLB.setBounds(10, 10, 42, 17);
@@ -147,13 +135,10 @@ public class AdminLogin extends javax.swing.JFrame {
 
     private void newUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserActionPerformed
         // TODO add your handling code here:'
+        NewUser obj = new NewUser();
+        dispose();
         
     }//GEN-LAST:event_newUserActionPerformed
-
-    private void forgotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forgotActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_forgotActionPerformed
 
     private void tf1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf1ActionPerformed
         // TODO add your handling code here:
@@ -190,7 +175,6 @@ public class AdminLogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton forgot;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -65,6 +65,33 @@ public class MyServer extends JHTTPServer{
             }
         }
         
+        if(uri.equals("/newUser")){
+            System.out.println("Request Received");
+            String user = parms.getProperty("user");
+            String pass = parms.getProperty(("pass"));
+            String gmail = parms.getProperty(("gmail"));
+            
+            try{
+                ResultSet rs = DBLoader.executeSQL("Select * from POS.users where username = \'" + user + "\'");       
+            
+
+                if (rs.next()) {
+                    res = new Response(HTTP_OK,"text/plain","Already Exists");
+                }
+                 else {
+                        rs.moveToInsertRow();
+                        rs.updateString("username", user);
+                        rs.updateString("password", pass);
+                        rs.updateString("gmail", gmail);
+                        rs.insertRow();
+                        res = new Response(HTTP_OK,"text/plain","Login Success");
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        
         if(uri.equals("/addCateg")){
             System.out.println("Add Categ Request Received");
             
@@ -443,6 +470,63 @@ public class MyServer extends JHTTPServer{
                         res = new Response(HTTP_OK,"text/plain","DataBase Error");
                     }
                 }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        
+        if(uri.equals("/fetchBills")){
+            System.out.println("Fetch Bills Request Received");
+            
+            try{
+                ResultSet rs = DBLoader.executeSQL("SELECT * FROM POS.Bills");
+                JSONArray jsonArray = new JSONArray(); 
+                
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();    
+                
+                while (rs.next()) {
+                JSONObject jsonObject = new JSONObject(); // JSON object for each row
+                for (int i = columnCount; i >= 1; i--) {
+                    String columnName = metaData.getColumnName(i);
+                    Object value = rs.getObject(i);
+                    jsonObject.put(columnName, value);
+                }
+                jsonArray.put(jsonObject);
+            }
+               
+                System.out.println("Hello "+jsonArray.toString());
+              res = new Response(HTTP_OK,"application/json",jsonArray.toString());
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        
+        if(uri.equals("/fetchBillDetails")){
+            System.out.println("Fetch Bill Details Request Received");
+            String BillID = parms.getProperty("BillID");
+            
+            try{
+                ResultSet rs = DBLoader.executeSQL("SELECT * FROM POS.BillDetails where BillID="+BillID);
+                JSONArray jsonArray = new JSONArray(); 
+                
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();    
+                
+                while (rs.next()) {
+                JSONObject jsonObject = new JSONObject(); // JSON object for each row
+                for (int i = columnCount; i >= 1; i--) {
+                    String columnName = metaData.getColumnName(i);
+                    Object value = rs.getObject(i);
+                    jsonObject.put(columnName, value);
+                }
+                jsonArray.put(jsonObject);
+            }
+               
+                System.out.println("Hello "+jsonArray.toString());
+              res = new Response(HTTP_OK,"application/json",jsonArray.toString());
             }
             catch(Exception e){
                 e.printStackTrace();

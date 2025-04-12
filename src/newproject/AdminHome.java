@@ -85,7 +85,8 @@ public class AdminHome extends JFrame implements ActionListener{
             dispose();
         }
         else if(e.getSource()==bt[4]){
-            
+            Admin_Booking_History obj = new Admin_Booking_History();
+            dispose();
         }
         else if(e.getSource()==bt[5]){
             JOptionPane.showMessageDialog(this, "Logging Out");

@@ -3,11 +3,12 @@ package newproject;
 import com.mashape.unirest.http.*;
 import java.net.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 import org.json.*;
 
 public class myclient {
 
-    String IP = "";
+    String IP = "localhost";
     static String adminGmail = null;
     static boolean isSet = false;
 
@@ -16,7 +17,7 @@ public class myclient {
             return -1;
         } else {
             try {
-                    HttpResponse<String> res = Unirest.get("http://localhost:8000/adminLogin").queryString("user", u).queryString("pass", p).asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/adminLogin").queryString("user", u).queryString("pass", p).asString();
 
                     String ans = res.getBody();
                     if (ans.equals("Login Failed")) {
@@ -39,6 +40,27 @@ public class myclient {
         return -2;
     }
 
+    public int createUser(String user, String pass,String gmail) {
+            try{
+                HttpResponse<String> res = Unirest.get("http://"+IP+":8000/newUser").queryString("user", user)
+                                                                                          .queryString("pass", pass)
+                                                                                          .queryString("gmail", gmail).asString();
+
+                    String ans = res.getBody();
+                    if (ans.equals("Already Exists")) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        return -2;
+    }
+    
+    
+
     public int add_Category(String name, String desc, String photo) {
         
         if (name.equals("") || desc.equals("") || photo.equals("null")) {
@@ -47,7 +69,7 @@ public class myclient {
             try {
                 try {
                     System.out.println("I am here");
-                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/addCateg").queryString("name", name).queryString("desc", desc).queryString("photo", photo).asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/addCateg").queryString("name", name).queryString("desc", desc).queryString("photo", photo).asString();
 
                     String ans = res.getBody();
 
@@ -79,7 +101,7 @@ public class myclient {
         {
             try {
                     System.out.println("I am here");
-                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/addProd").queryString("name", name).queryString("desc", desc)
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/addProd").queryString("name", name).queryString("desc", desc)
                                                                                                 .queryString("categName", categ_name).queryString("price", price)
                                                                                                 .queryString("quantity",quantity).queryString("photo", photo).asString();
 
@@ -105,7 +127,7 @@ public class myclient {
             public void run() {
                 try {
                     System.out.println("Hello");
-                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchCateg").asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchCateg").asString();
 
                     if (res.getStatus() == 200) {
                         String ans = res.getBody();
@@ -156,7 +178,7 @@ public class myclient {
                 
                 try {
                     System.out.println("Hello");
-                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchProd").asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchProd").asString();
 
                     if (res.getStatus() == 200) {
                         String ans = res.getBody();
@@ -199,7 +221,7 @@ public class myclient {
             public void run() {
                 try {
                     System.out.println("Hello");
-                    HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/fetchCateg").asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchCateg").asString();
 
                     if (res.getStatus() == 200) {
                         String ans = res.getBody();
@@ -243,7 +265,7 @@ public class myclient {
             @Override
             public void run() {
                 try{
-                    HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchCategNmPh").asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchCategNmPh").asString();
 
                     if(res.getStatus()==200){
                         String ans = res.getBody();
@@ -288,7 +310,7 @@ public class myclient {
             @Override
             public void run() {
                 try{
-                    HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchProductNmPh").queryString("CategName",name).asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchProductNmPh").queryString("CategName",name).asString();
 
                     if(res.getStatus()==200){
                         String ans = res.getBody();
@@ -322,6 +344,98 @@ public class myclient {
         }
         return al;
     }
+    
+    public ArrayList fetchBills(){
+        ArrayList<BillClass> al = new ArrayList<>();
+        
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchBills").asString();
+
+                    if(res.getStatus()==200){
+                        String ans = res.getBody();
+                        System.out.println(ans);
+
+                        JSONArray arr = new JSONArray(ans);
+                        
+                        for(int i=0;i<arr.length();i++){
+                            JSONObject obj = (JSONObject) (arr.get(i));
+                            String BillID = obj.get("BillID")+"";
+                            String Date_Time = (String) obj.get("Date_Time");
+                            String PhoneNo = (String) obj.get("PhoneNo");
+                            String GTotal = obj.get("GTotal")+"";
+                            String Payment_Type = (String) obj.get("Payment_Type");
+                            String AdminGmail = (String) obj.get("AdminEmail");
+                            
+
+                            al.add(new BillClass(BillID,PhoneNo,AdminGmail,Date_Time,Payment_Type,GTotal));
+                        }
+                    }
+                    else{
+                        System.out.println(res.getBody());
+                    }
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        t1.start();
+        try{
+            t1.join();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return al;
+    }
+    
+    public ArrayList getBillDetails(String BillID){
+        ArrayList<BillDetailsClass> al = new ArrayList<>();
+        
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchBillDetails").queryString("BillID",BillID).asString();
+
+                    if(res.getStatus()==200){
+                        String ans = res.getBody();
+                        System.out.println(ans);
+
+                        JSONArray arr = new JSONArray(ans);
+                        
+                        for(int i=0;i<arr.length();i++){
+                            JSONObject obj = (JSONObject) (arr.get(i));
+                            String BillDetailsID = obj.get("BillDetailsID")+"";
+                            String PName = (String) obj.get("PName");
+                            String PricePerUnit = obj.get("PricePerUnit")+"";
+                            String Quantity = obj.get("Quantity")+"";
+                            
+
+                            al.add(new BillDetailsClass(BillDetailsID,PName,PricePerUnit,Quantity));
+                        }
+                    }
+                    else{
+                        System.out.println(res.getBody());
+                    }
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        t1.start();
+        try{
+            t1.join();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return al;
+    }
 
     public int removeCategory(String nm) {
         if (nm.equals("")) {
@@ -330,7 +444,7 @@ public class myclient {
             ArrayList<Category> al = new ArrayList<>();
             try {
                 System.out.println("Hello");
-                HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/removeCateg").queryString("name", nm).asString();
+                HttpResponse<String> res = Unirest.get("http://"+IP+":8000/removeCateg").queryString("name", nm).asString();
 
                 if (res.getStatus() == 200) {
                     String ans = res.getBody();
@@ -356,7 +470,7 @@ public class myclient {
         System.out.println("Increase Quantity request received.");
         try{
             
-            HttpResponse<String> res = Unirest.get("http://127.0.0.1:8000/incQty").queryString("product", product).queryString("quantity",quantity).asString();
+            HttpResponse<String> res = Unirest.get("http://"+IP+":8000/incQty").queryString("product", product).queryString("quantity",quantity).asString();
             
             if(res.getStatus()==200){
                 String ans = res.getBody();
@@ -383,7 +497,7 @@ public class myclient {
         System.out.println("Name : "+name);
         
         try{
-            HttpResponse<String> res = Unirest.get("http://localhost:8000/checkQty").queryString("Pname",name).queryString("need",need).asString();
+            HttpResponse<String> res = Unirest.get("http://"+IP+":8000/checkQty").queryString("Pname",name).queryString("need",need).asString();
             
             if(res.getStatus()==200){
                 String ans = res.getBody();
@@ -408,7 +522,7 @@ public class myclient {
         
         try{
             System.out.println("I am here in getBillProd");
-            HttpResponse<String> res = Unirest.get("http://localhost:8000/fetchBillProd").queryString("Pname",Pname).asString();
+            HttpResponse<String> res = Unirest.get("http://"+IP+":8000/fetchBillProd").queryString("Pname",Pname).asString();
             
             if(res.getStatus()==200){
                 String ans = res.getBody();
@@ -462,8 +576,7 @@ public class myclient {
             }
             System.out.println(ProductsStr+"\n"+qtyStr+"\n"+ppriceStr+"\n");
             try{
-                HttpResponse<String> res = Unirest.get("http://localhost:8000/addBillDetails")
-                                                                                                 .queryString("CPhone",CPhone)
+                HttpResponse<String> res = Unirest.get("http://"+IP+":8000/addBillDetails").queryString("CPhone",CPhone)
                                                                                                  .queryString("p_mode",p_mode)
                                                                                                  .queryString("ProductsStr",ProductsStr)
                                                                                                  .queryString("AdminGmail",adminGmail)
@@ -492,6 +605,8 @@ public class myclient {
         
         return -2;
     }
+    
+    
 
     public static void main(String[] args) {
 

@@ -1,6 +1,7 @@
 
 package newproject;
 
+import java.awt.Window;
 import javax.swing.*;
 
 /**
@@ -13,15 +14,15 @@ public class Get_Customer_Details extends javax.swing.JFrame {
     String[] products;
     long gtotal;
     int[] qty,pprice;
+    
     public Get_Customer_Details() {
         this(new String[0], 0, new int[0], new int[0]);
     }
+    
     public Get_Customer_Details(String[] products,long gtotal,int[] qty,int[] pprice) {
-//    public Get_Customer_Details() {
         
         String ale[]={"Cash","UPI","Card"};
          
-        
         initComponents();
         jc = new JComboBox(ale);
         obj = new myclient();
@@ -30,12 +31,12 @@ public class Get_Customer_Details extends javax.swing.JFrame {
         this.pprice = pprice;
         this.qty = qty;
         
-        jc.setBounds(280, 220, 120, 30);
+        jc.setBounds(210, 210, 120, 30);
         
         setLayout(null);
         
         add(jc);
-        setSize(700,400);
+        setSize(429,379);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -61,18 +62,18 @@ public class Get_Customer_Details extends javax.swing.JFrame {
 
         jLabel2.setText("Phone Number");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(150, 170, 100, 17);
+        jLabel2.setBounds(70, 150, 100, 17);
 
         jLabel3.setText("Payment Type");
         getContentPane().add(jLabel3);
-        jLabel3.setBounds(150, 210, 90, 40);
+        jLabel3.setBounds(70, 200, 90, 40);
 
         jLabel5.setFont(new java.awt.Font("SansSerif", 1, 36)); // NOI18N
         jLabel5.setText("Customer Details");
         getContentPane().add(jLabel5);
-        jLabel5.setBounds(180, 10, 340, 60);
+        jLabel5.setBounds(60, 40, 340, 60);
         getContentPane().add(jTextField2);
-        jTextField2.setBounds(280, 163, 160, 30);
+        jTextField2.setBounds(210, 140, 160, 30);
 
         jButton1.setText("Generate Bill");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -81,7 +82,7 @@ public class Get_Customer_Details extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(250, 290, 150, 40);
+        jButton1.setBounds(120, 280, 150, 40);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -94,7 +95,13 @@ public class Get_Customer_Details extends javax.swing.JFrame {
         
         if(ans==1){
             JOptionPane.showMessageDialog(this, "Order Successful");
-            dispose();
+            
+            for (Window window : Window.getWindows()) {
+                if (window instanceof JFrame) {
+                    ((JFrame) window).dispose();
+                }
+            }
+            AdminHome obj = new AdminHome();
         }
         else if(ans ==0){
             JOptionPane.showMessageDialog(this, "Please fill Complete Details");
