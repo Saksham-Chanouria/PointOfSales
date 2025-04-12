@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.json.*;
 
 public class MyServer extends JHTTPServer{
@@ -51,7 +53,8 @@ public class MyServer extends JHTTPServer{
                 ResultSet rs = DBLoader.executeSQL("Select * from POS.users where Username=\""+username+"\" and Password=\""+password+"\"");
                 
                 if(rs.next()){
-                    res = new Response(HTTP_OK,"text/plain","Login Successful");
+                    String gmail = rs.getString("Gmail");
+                    res = new Response(HTTP_OK,"text/plain",gmail);
                 }
                 else{
                     res = new Response(HTTP_OK,"text/plain","Login Failed");
@@ -332,6 +335,114 @@ public class MyServer extends JHTTPServer{
                     System.out.println("Hello "+jsonArray.toString());
                     res = new Response(HTTP_OK,"application/json",jsonArray.toString());
                 
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        
+        if(uri.equals("/addBillDetails")){
+            String Cname, CPhone, p_mode;
+            String[] Products;
+            String ProductsStr,qtyStr,ppriceStr,AdminGmail;
+            long gtotal;
+            int[] qty = new int[100], pprice = new int[100];
+            String[] qtyS, ppriceS;
+            int length;
+            ArrayList<Integer> al;
+            
+            // <----------- Fetching Bill Details from Users ------------->
+            CPhone = parms.getProperty("CPhone");
+            p_mode = parms.getProperty("p_mode");
+            AdminGmail = parms.getProperty("AdminGmail");
+            ProductsStr = parms.getProperty("ProductsStr");
+            gtotal = Integer.parseInt(parms.getProperty("gtotal"));
+            qtyStr = parms.getProperty("qtyStr");
+            ppriceStr = parms.getProperty("ppriceStr");
+            length = Integer.parseInt(parms.getProperty("length"));
+                
+            Products = ProductsStr.split(":");
+            qtyS = qtyStr.split(":");
+            ppriceS = ppriceStr.split(":");
+                
+            for(int i=0;i<qtyS.length;i++){
+                qty[i] = Integer.parseInt(qtyS[i]);
+                pprice[i] = Integer.parseInt(ppriceS[i]);
+            }
+            
+            // Fetching Current Date and Time
+            LocalDateTime now = LocalDateTime.now();
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = now.format(formatter);
+
+            
+            
+                int BillId=0;
+                // <---------------------------------------------------------->
+            try{
+                // <--------------  Storing data in database ----------------->
+                ResultSet rs = DBLoader.executeSQL("Select * from POS.Bills");
+                
+                rs.moveToInsertRow();
+                rs.updateString("Date_TIme", formattedDateTime);
+                rs.updateLong("GTotal", gtotal);
+                rs.updateString("AdminEmail", AdminGmail);
+                rs.updateString("PhoneNo", CPhone);
+                rs.updateString("Payment_Type", p_mode);
+                rs.insertRow();
+                System.out.println("Insertion Done");
+                
+                
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            try{
+                // <--------------  Storing data in database ----------------->
+                ResultSet rs = DBLoader.executeSQL("Select * from POS.Bills where Date_time='"+formattedDateTime+"'");
+                
+                if(rs.next()){
+                    BillId = rs.getInt("BillID");
+                    System.out.println(BillId);
+                    
+                    try{
+                        for(int i=0;i<Products.length;i++){
+                            ResultSet rs2 = DBLoader.executeSQL("Select * from POS.BillDetails");
+                            
+                            rs2.moveToInsertRow();
+                        
+                            rs2.updateInt("BillID", BillId);
+                            rs2.updateString("PName", Products[i]);
+                            rs2.updateInt("PricePerUnit", pprice[i]);
+                            rs2.updateInt("Quantity", qty[i]);
+                            rs2.insertRow();
+                        }
+                        
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            
+            try{
+                for(int i=0;i<Products.length;i++){
+                    ResultSet rs = DBLoader.executeSQL("Select * from POS.Products where PName='"+Products[i]+"'");
+                    
+                    if(rs.next()){
+                        int orig = rs.getInt("Quantity");
+                        rs.updateInt("Quantity", orig-qty[i]);
+                        rs.updateRow();
+                        res = new Response(HTTP_OK,"text/plain","Quantity Reduced and Product Data Added");
+                    }
+                    else{
+                        res = new Response(HTTP_OK,"text/plain","DataBase Error");
+                    }
+                }
             }
             catch(Exception e){
                 e.printStackTrace();

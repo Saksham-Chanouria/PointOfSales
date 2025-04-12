@@ -12,12 +12,12 @@ public class AdminHome extends JFrame implements ActionListener{
     public AdminHome(){
         setLayout(null);
         bt = new JButton[6];
-        try{
-            MyServer obj4 = new MyServer(8000);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//            MyServer obj4 = new MyServer(8000);
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//        }
         
         
         heading = new JLabel("Point of Sales");
@@ -88,7 +88,9 @@ public class AdminHome extends JFrame implements ActionListener{
             
         }
         else if(e.getSource()==bt[5]){
-            
+            JOptionPane.showMessageDialog(this, "Logging Out");
+            AdminLogin obj = new AdminLogin();
+            dispose();
         }
     }
     

@@ -12,6 +12,12 @@ public class AdminLogin extends javax.swing.JFrame {
     
     public AdminLogin() {
         initComponents();
+        try{
+            MyServer obj4 = new MyServer(8000);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         
         Dimension d= new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
         
@@ -131,8 +137,11 @@ public class AdminLogin extends javax.swing.JFrame {
         else if(res==0){
             JOptionPane.showMessageDialog(this, "Login Failed");
         }
-        else{
+        else if(res==-1){
             JOptionPane.showMessageDialog(this, "Please fill complete details");
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Internal Server Error");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -174,6 +183,7 @@ public class AdminLogin extends javax.swing.JFrame {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+  
                 new AdminLogin().setVisible(true);
             }
         });

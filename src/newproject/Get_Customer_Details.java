@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package newproject;
 
 import javax.swing.*;
@@ -13,11 +10,14 @@ import javax.swing.*;
 public class Get_Customer_Details extends javax.swing.JFrame {
     JComboBox jc;
     myclient obj;
-    String[] Products;
+    String[] products;
     long gtotal;
     int[] qty,pprice;
-//    public Get_Customer_Details(String[] products,long gtotal,int[] qty,int[] pprice) {
     public Get_Customer_Details() {
+        this(new String[0], 0, new int[0], new int[0]);
+    }
+    public Get_Customer_Details(String[] products,long gtotal,int[] qty,int[] pprice) {
+//    public Get_Customer_Details() {
         
         String ale[]={"Cash","UPI","Card"};
          
@@ -25,10 +25,10 @@ public class Get_Customer_Details extends javax.swing.JFrame {
         initComponents();
         jc = new JComboBox(ale);
         obj = new myclient();
-        this.Products = Products;
+        this.products = products;
         this.gtotal = gtotal;
         this.pprice = pprice;
-        
+        this.qty = qty;
         
         jc.setBounds(280, 220, 120, 30);
         
@@ -50,20 +50,14 @@ public class Get_Customer_Details extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
-
-        jLabel1.setText("Name");
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(170, 110, 90, 30);
 
         jLabel2.setText("Phone Number");
         getContentPane().add(jLabel2);
@@ -77,14 +71,6 @@ public class Get_Customer_Details extends javax.swing.JFrame {
         jLabel5.setText("Customer Details");
         getContentPane().add(jLabel5);
         jLabel5.setBounds(180, 10, 340, 60);
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jTextField1);
-        jTextField1.setBounds(280, 110, 160, 30);
         getContentPane().add(jTextField2);
         jTextField2.setBounds(280, 163, 160, 30);
 
@@ -102,16 +88,26 @@ public class Get_Customer_Details extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String Cname = jTextField1.getText();
         String CPhone = jTextField2.getText();
         String payment_mode = (String)jc.getSelectedItem();
-        int ans = obj.Buy_prod(Cname,CPhone,payment_mode,Products,gtotal,qty,pprice);
+        int ans = obj.Buy_prod(CPhone,payment_mode,products,gtotal,qty,pprice);
         
+        if(ans==1){
+            JOptionPane.showMessageDialog(this, "Order Successful");
+            dispose();
+        }
+        else if(ans ==0){
+            JOptionPane.showMessageDialog(this, "Please fill Complete Details");
+        }
+        else if(ans==-1){
+            JOptionPane.showMessageDialog(this, "Database Error");
+            dispose();
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Internal Server Error");
+            dispose();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -150,11 +146,9 @@ public class Get_Customer_Details extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

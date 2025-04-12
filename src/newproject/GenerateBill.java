@@ -421,10 +421,17 @@ public class GenerateBill extends javax.swing.JFrame {
                 Object pp = jTable1.getValueAt(row, 3);
                 myAmount += (Integer)value;
                 products[row] = (String)nm;
-                pprice[row] = 1;
-                qty[row] = 1;
+                String qStr = qt+"";
+                String pStr = pp+"";
+                
+                pprice[row] = Integer.parseInt(pStr);
+                qty[row] = Integer.parseInt(qStr);
             }
-//            Get_Customer_Details obj = new Get_Customer_Details(products,myAmount,qty,pprice);
+            for(int i=0;i<qty.length;i++){
+                System.out.println(qty[i]);
+            }
+            Get_Customer_Details obj = new Get_Customer_Details(products,myAmount,qty,pprice);
+//            Get_Customer_Details obj = new Get_Customer_Details();
         }
         else{
             JOptionPane.showMessageDialog(this, "Buy some products");

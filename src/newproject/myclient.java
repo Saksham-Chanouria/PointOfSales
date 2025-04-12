@@ -8,6 +8,8 @@ import org.json.*;
 public class myclient {
 
     String IP = "";
+    static String adminGmail = null;
+    static boolean isSet = false;
 
     public int send_data(String u, String p) {
         if (u.equals("") || p.equals("")) {
@@ -17,11 +19,17 @@ public class myclient {
                     HttpResponse<String> res = Unirest.get("http://localhost:8000/adminLogin").queryString("user", u).queryString("pass", p).asString();
 
                     String ans = res.getBody();
-
-                    if (ans.equals("Login Successful")) {
-                        return 1;
-                    } else {
+                    if (ans.equals("Login Failed")) {
                         return 0;
+                        
+                    } else {
+                        if(!isSet){
+                            adminGmail = ans;
+                            isSet = true;
+                        }
+                        
+                        return 1;
+                        
                     }
 
             } catch (Exception e) {
@@ -432,10 +440,57 @@ public class myclient {
         return al;
     }
     
-    public int Buy_prod(String Cname,String CPhone,String p_mode,String[] Products,long gtotal,int[] qty,int [] pprice){
+    public int Buy_prod(String CPhone,String p_mode,String[] Products,long gtotal,int[] qty,int [] pprice){
+        System.out.println("I am in Buy Products");
+        String ProductsStr="",qtyStr="",ppriceStr="";
+        
+        if(CPhone.equals("")){
+            return 0;
+        }
+        
+        else{
+            for(int i=0;i<Products.length;i++){
+                if(i==(Products.length-1)){
+                    ProductsStr += Products[i];
+                    qtyStr += qty[i]+"";
+                    ppriceStr += pprice[i]+"";
+                    break;
+                }
+                ProductsStr += Products[i]+":";
+                qtyStr += qty[i]+":";
+                ppriceStr += pprice[i]+":";
+            }
+            System.out.println(ProductsStr+"\n"+qtyStr+"\n"+ppriceStr+"\n");
+            try{
+                HttpResponse<String> res = Unirest.get("http://localhost:8000/addBillDetails")
+                                                                                                 .queryString("CPhone",CPhone)
+                                                                                                 .queryString("p_mode",p_mode)
+                                                                                                 .queryString("ProductsStr",ProductsStr)
+                                                                                                 .queryString("AdminGmail",adminGmail)
+                                                                                                 .queryString("gtotal",gtotal)
+                                                                                                 .queryString("qtyStr",qtyStr)
+                                                                                                 .queryString("ppriceStr",ppriceStr)
+                                                                                                 .queryString("length",qty.length)
+                                                                                                 .asString();
+                
+                
+                String ans = res.getBody();
+
+                if (ans.equals("Quantity Reduced and Product Data Added")) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            
+        }
         
         
-        return -1;
+        
+        return -2;
     }
 
     public static void main(String[] args) {
