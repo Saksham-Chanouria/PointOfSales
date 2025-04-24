@@ -32,7 +32,7 @@ public class Admin_Manage_Category extends javax.swing.JFrame {
         jfc = new JFileChooser();
         jTable1.setModel(tm);
         
-        // <--------------- Code to render the image on to JTable ---------->
+        // <--------------- Code to render the image on to JTable and setting dimensions for JTable ---------->
         jTable1.setRowHeight(100);  
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(200);  

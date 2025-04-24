@@ -113,7 +113,7 @@ public class GenerateBill extends javax.swing.JFrame {
         
         al = obj.fetchCategNamePhoto();
         
-        
+        jTable1.setModel(tm);
         
 //         Add labels to JPanel
         for (int i = 0; i < al.size(); i++) {
@@ -131,7 +131,7 @@ public class GenerateBill extends javax.swing.JFrame {
             
             
             
-            jTable1.setModel(tm);
+            
             categJp.add(btArr[i]);
             jsp2 = new JScrollPane(productJp);
             jsp2.setBounds(470, 60, 250, 650); 
@@ -203,6 +203,7 @@ public class GenerateBill extends javax.swing.JFrame {
         for(int i=0;i<bill_pname.size();i++){
             if(name.equals(bill_pname.get(i))){
                 dupFlag=true;
+                break;
             }
         }
         System.out.println("I am checking the products");

@@ -17,7 +17,9 @@ public class myclient {
             return -1;
         } else {
             try {
-                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/adminLogin").queryString("user", u).queryString("pass", p).asString();
+                    HttpResponse<String> res = Unirest.get("http://"+IP+":8000/adminLogin").queryString("user", u)
+                                                                                            .queryString("pass", p)
+                                                                                            .asString();
 
                     String ans = res.getBody();
                     if (ans.equals("Login Failed")) {
@@ -30,9 +32,7 @@ public class myclient {
                         }
                         
                         return 1;
-                        
                     }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -563,6 +563,7 @@ public class myclient {
         }
         
         else{
+            // Since we cannot send entire string array as querystring , so we will append all prod in a string with a delimeter : 
             for(int i=0;i<Products.length;i++){
                 if(i==(Products.length-1)){
                     ProductsStr += Products[i];
