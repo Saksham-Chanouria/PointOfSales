@@ -1,23 +1,14 @@
 
 package newproject;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import java.awt.*;
+import javax.swing.*;
 
 public class AdminLogin extends javax.swing.JFrame {
 
     
     public AdminLogin() {
         initComponents();
-        try{
-            MyServer obj4 = new MyServer(8000);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
         
         Dimension d= new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
         
